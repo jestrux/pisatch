@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Search Unsplash</title>
+    <link rel="stylesheet" href="justified-gallery.css">
+
+    <style>
+        *{
+            box-sizing: border-box;
+            user-select: none;
+            font-family: sans-serif;
+        }
+
+        html, body{
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .layout{
+            display: flex;
+        }
+        
+        .layout.inline{
+            display: inline-flex;
+        }
+
+        .center,
+        .center-center{
+            align-items: center;
+        }
+        
+        .center-center{
+            justify-content: center;
+        }
+
+        #searchResults{
+            height: calc(100vh - 55.6px);
+            background: #eaeaea;
+            overflow-y: auto;
+            padding: 0.2em 0.5em;
+        }
+
+        #searchResults:empty{
+            display: none;
+        }
+
+        .photo-item img{
+            width: 100%;
+        }
+
+        .caption{
+            display: none !important;
+        }
+
+        #titleBar{
+            position: relative;
+        }
+
+        #titleBar input{
+            outline: none;
+            border: none;
+            padding: 0.8em 1em;
+            width: 100%;
+            font-size: 1.6em;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        #prevNext{
+            position: absolute;
+            right: 0.8em;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        #prevNext button{
+            padding: 0.3rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            border: 1px solid #ddd;
+            background: transparent;
+            font-weight: 300;
+            color: #555;
+            outline: none;
+        }
+
+        #prevNext button:first-child{
+            margin-right: 0.6em;
+        }
+        
+        #prevNext button:last-child svg{
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div id="titleBar" class="layout center">
+        <input placeholder="What are you looking for?" autofocus type="text"
+            onkeyup="searchUnsplash(event)">
+
+        <div id="prevNext" class="layout inline center">
+            <button onclick="goToPrevPage()">
+                <svg fill="currentColor" width="24" height="24" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg>
+            </button>
+
+            <button onclick="goToNextPage()">
+                <svg fill="currentColor" width="24" height="24" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="searchResults"></div>
+
+    <script>
+        if (typeof module === 'object') {window.module = module; module = undefined;}
+    </script>
+    <script src="jquery.js"></script>
+    <script src="justified-gallery.js"></script>
+    <script>
+        const Unsplash = require('unsplash-js').default;
+        const { ipcRenderer } = require('electron');
+        let curPage = 1;
+        let searchKey = "";
+        let fetchedResults = {};
+        const searchResults = $("#searchResults");
+        const loader = `<div style="height: 200px" class="layout center-center"><svg width="50px" height="50px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="background: none"><circle cx="50" cy="50" fill="none" stroke="#000" strokeWidth="3" r="35" strokeDasharray="164.93361431346415 56.97787143782138" transform="rotate(269.874 50 50)"><animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"></animateTransform></circle></svg></div>`;
+        const renderSearchResults = function(photos){
+            let results = '<div id="resultItems">'
+            results += photos.map(photo => `
+                <div class="photo-item">
+                    <img src="${photo}" alt="result item" />
+                </div>
+            `).join('');
+            results += "</div>"
+            searchResults.html(results);
+            $("#resultItems").justifiedGallery({rowHeight: 200, margins: 8});
+        }
+        
+        const unsplash = new Unsplash({
+            applicationId: "17ef130962858e4304efe9512cf023387ee5d36f0585e4346f0f70b2f9729964",
+            secret: "14f525467a9227bdbc99931faf3a9e549fc718c049f18a952f18291e95335e36"
+        });
+
+        function doSearch(){
+            searchResults.html(loader);
+            unsplash.search.photos(searchKey, curPage, 20)
+                .then(res => res.json())
+                .then(data => {
+                    const photos = data.results.map(({urls}) => urls.regular);
+                    fetchedResults[curPage] = photos;
+                    renderSearchResults(photos);
+                });
+        }
+
+        function searchUnsplash(e){
+            if(e.keyCode == 13){
+                searchKey = e.target.value;
+                curPage = 1;
+                fetchedResults = {};
+                doSearch();
+            }
+        }
+        
+        function goToNextPage(){
+            curPage += 1;
+            if(fetchedResults[curPage]){
+                renderSearchResults(fetchedResults[curPage]);
+                return;
+            }
+            doSearch();
+        }
+        
+        function goToPrevPage(){
+            if(curPage > 0){
+                curPage -= 1;
+                renderSearchResults(fetchedResults[curPage]);
+            }
+        }
+    </script>
+    <script>if (window.module) module = window.module;</script>
+</body>
+</html>
