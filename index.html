@@ -12,20 +12,35 @@
             box-sizing: border-box;
             user-select: none;
             font-family: sans-serif;
+            color: #fff;
+        }
+
+        @font-face{
+            font-family:"Logo";
+            src:url("GreatVibes.ttf");
         }
 
         html, body{
             margin: 0;
             padding: 0;
             overflow: hidden;
+            background: #171717;
         }
 
         .layout{
             display: flex;
         }
-        
+
         .layout.inline{
             display: inline-flex;
+        }
+        
+        .layout.wrap{
+            flex-wrap: wrap;
+        }
+        
+        .layout.justified{
+            justify-content: space-between;
         }
 
         .center,
@@ -37,9 +52,133 @@
             justify-content: center;
         }
 
+        #titleBar{
+            position: relative;
+            background: #222;
+            padding: 0.5em;
+            padding-bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 2px solid #4d4d4d;
+        }
+
+        #logo{
+            font-family: 'Logo', 'Courier New', Courier, monospace;
+            font-size: 30px;
+            color: #888787;
+            letter-spacing: 0.1em;
+        }
+        
+        #tweet{
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: #555;
+            outline: none;
+            margin-bottom: 0.5em;
+        }
+
+        #tweet svg{
+            width: 18px;
+            height: 18px;
+            margin-right: 0.6em;
+            stroke: dimgrey;
+        }
+        
+        #tweet span{
+            font-weight: 300;
+            color: #8c8b8b;
+            font-size: 18px;
+        }
+
+        #searchbar{
+            position: relative;
+            margin-bottom: 0.3em;
+            width: 100%;
+            max-width: 360px;
+        }
+        
+        #searchbar svg{
+            position: absolute;
+            left: 0.6em;
+            top: 0;
+            bottom: 0;
+            width: 22px;
+            height: 22px;
+            margin: auto 0;
+            fill: #777;
+        }
+
+        #searchbar input{
+            outline: none;
+            border: none;
+            padding: 0.5em 1em;
+            padding-left: 2.5em;
+            width: 100%;
+            font-size: 1em;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            border-radius: 5px;
+            width: 100%;
+            background: #333;
+            color: #bbb;
+        }
+
+        #searchbar input::selection{
+            background: #eee;
+            color: #000;
+        }
+
+        #searchbar input::placeholder{
+            color: #6f6f6f;
+        }
+        
+        #prevNext span{
+            color: #999;
+            font-weight: 300;
+            text-align: center;
+        }
+        
+        #prevNext span:not(:empty){
+            min-width: 360px;
+        }
+        
+        #prevNext strong{
+            color: #aaa;
+            font-weight: normal;
+        }
+        
+        #prevNext small{
+            color: #888;
+        }
+        
+        #prevNext button{
+            padding: 0.3rem 0.1rem;
+            border: none;
+            background: transparent;
+            outline: none;
+            margin: 0 2em;
+        }
+
+        #prevNext button svg{
+            fill: #797878;
+        }
+
+        #prevNext button:disabled svg{
+            fill: #404040;
+        }
+
+        #prevNext button:hover{
+            color: #555;
+        }
+        
+        #prevNext button:last-child svg{
+            transform: rotate(180deg);
+        }
+
         #searchResults{
-            height: calc(100vh - 55.6px);
-            background: #eaeaea;
+            height: calc(100vh - 80px);
             overflow-y: auto;
             padding: 0.2em 0.5em;
         }
@@ -48,70 +187,117 @@
             display: none;
         }
 
+        .photo-item{
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .photo-item:before,
+        .photo-item:after{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease-out;
+            z-index: 5;
+        }
+
+        .photo-item:before{
+            background: inherit;
+        }
+
+        .photo-item:hover:before{
+            opacity: 0.45;
+        }
+
+        .photo-item.link-copied:before,
+        .photo-item.link-copied:after{
+            opacity: 1;
+        }
+
+        .photo-item:after{
+            content: 'Link Copied';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.95em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 300;
+            padding: 1.5em;
+            line-height: 1.5em;
+            color: inherit;
+        }
+
+        .photo-item.link-copied:after{
+            animation: zoomIn 0.6s ease-out;
+        }
+
+        @keyframes zoomIn{
+            from{
+                transform: scale(1)
+            }
+
+            50%{
+                transform: scale(1.35);
+                opacity: 1;
+            }
+            
+            80%{
+                transform: scale(1.35);
+                opacity: 1;
+            }
+
+            to{
+                transform: scale(0.6);
+                opacity: 0;
+            }
+        }
+
         .photo-item img{
             width: 100%;
+            background: #000;
         }
 
         .caption{
             display: none !important;
         }
-
-        #titleBar{
-            position: relative;
-        }
-
-        #titleBar input{
-            outline: none;
-            border: none;
-            padding: 0.8em 1em;
-            width: 100%;
-            font-size: 1.6em;
-            font-weight: 300;
-            letter-spacing: 0.02em;
-        }
-
-        #prevNext{
-            position: absolute;
-            right: 0.8em;
-            top: 0;
-            bottom: 0;
-            margin: auto;
-            display: flex;
-            align-items: center;
-        }
-
-        #prevNext button{
-            padding: 0.3rem;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            border: 1px solid #ddd;
-            background: transparent;
-            font-weight: 300;
-            color: #555;
-            outline: none;
-        }
-
-        #prevNext button:first-child{
-            margin-right: 0.6em;
-        }
-        
-        #prevNext button:last-child svg{
-            transform: rotate(180deg);
-        }
     </style>
 </head>
 <body>
-    <div id="titleBar" class="layout center">
-        <input placeholder="What are you looking for?" autofocus type="text"
-            onkeyup="searchUnsplash(event)">
+    <div id="titleBar">
+        <div class="layout center justified" style="width: 100%; padding: 0 1.5em;">
+            <span id="logo">
+                Pisatch
+            </span>
 
-        <div id="prevNext" class="layout inline center">
-            <button onclick="goToPrevPage()">
-                <svg fill="currentColor" width="24" height="24" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg>
+            <div id="searchbar">
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input placeholder="What are you looking for?" autofocus type="text"
+                    onkeyup="searchUnsplash(event)">
+            </div>
+
+            <button id="tweet" class="layout inline center-center" onclick="sendTweet()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                <span>tweet</span>
+            </button>
+        </div>
+        
+
+        <div id="prevNext" class="layout inline center justified">
+            <button id="prevButton" disabled onclick="goToPrevPage()">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg>
             </button>
 
-            <button onclick="goToNextPage()">
-                <svg fill="currentColor" width="24" height="24" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg>
+            <span id="resultsMessage"></span>
+
+            <button id="nextButton" disabled onclick="goToNextPage()">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21z"/></svg>
             </button>
         </div>
     </div>
@@ -123,53 +309,109 @@
     </script>
     <script src="jquery.js"></script>
     <script src="justified-gallery.js"></script>
+    <script src="fast-average-color.js"></script>
     <script>
         const Unsplash = require('unsplash-js').default;
+        const fac = new FastAverageColor();
         const { ipcRenderer } = require('electron');
         let curPage = 1;
+        let totalResults = 0;
+        let totalPages = 0;
         let searchKey = "";
         let fetchedResults = {};
+        let initialSearch = true;
         const searchResults = $("#searchResults");
-        const loader = `<div style="height: 200px" class="layout center-center"><svg width="50px" height="50px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="background: none"><circle cx="50" cy="50" fill="none" stroke="#000" strokeWidth="3" r="35" strokeDasharray="164.93361431346415 56.97787143782138" transform="rotate(269.874 50 50)"><animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"></animateTransform></circle></svg></div>`;
-        const renderSearchResults = function(photos){
+        const prevButton = $("#prevButton");
+        const nextButton = $("#nextButton");
+        const resultsMessage = $("#resultsMessage");
+        const loader = `<div style="height: 60px" class="layout center-center"><img src="loader.gif" width="50px" /></div>`;
+        const noResults = `<div style="height: 60px; color: #333" class="layout center-center">No results found.</div>`;
+        const unsplash = new Unsplash({
+            applicationId: "17ef130962858e4304efe9512cf023387ee5d36f0585e4346f0f70b2f9729964",
+            secret: "14f525467a9227bdbc99931faf3a9e549fc718c049f18a952f18291e95335e36"
+        });
+
+        function renderSearchResults(photos){
+            if(!photos.length){
+                searchResults.html(noResults);
+
+                if(initialSearch)
+                    ipcRenderer.send('state-change', 'no-results');
+                return;
+            }
+
+            if(initialSearch)
+                ipcRenderer.send('state-change', 'found-results');
+
             let results = '<div id="resultItems">'
             results += photos.map(photo => `
-                <div class="photo-item">
+                <div class="photo-item" onclick="copyLinkToClipboard(event, '${photo}')">
                     <img src="${photo}" alt="result item" />
                 </div>
             `).join('');
             results += "</div>"
             searchResults.html(results);
             $("#resultItems").justifiedGallery({rowHeight: 200, margins: 8});
+
+            let resultText = `<strong>${totalResults > 0 ? totalResults : "No"}</strong>`;
+            resultText += totalResults === 1 ? " result" : " results";
+            resultText += ` found for <strong>${searchKey}</strong> &nbsp;&nbsp; &mdash; &nbsp;&nbsp; `;
+            resultText += ` <small>page ${curPage} of ${totalPages}</small>`;
+
+            resultsMessage.html(resultText);
+            setImageColors();
+            initialSearch = false;
         }
-        
-        const unsplash = new Unsplash({
-            applicationId: "17ef130962858e4304efe9512cf023387ee5d36f0585e4346f0f70b2f9729964",
-            secret: "14f525467a9227bdbc99931faf3a9e549fc718c049f18a952f18291e95335e36"
-        });
+
+        function setImageColors(){
+            const resultItems = searchResults.find(".photo-item");
+            searchResults.find("img").each((index, image) => {
+                const parent = image.parentNode;
+                image.onload = function(){
+                    const color = fac.getColor(image);
+                    parent.style.backgroundColor = color.rgba.replace('1)', '0.92)');
+                    parent.style.color = color.isDark ? '#fff' : '#000';
+                }
+            });
+        }
 
         function doSearch(){
             searchResults.html(loader);
-            unsplash.search.photos(searchKey, curPage, 20)
+            resultsMessage.text("");
+
+            if(initialSearch)
+                ipcRenderer.send('state-change', 'searching');
+
+            unsplash.search.photos(searchKey, curPage, 15)
                 .then(res => res.json())
                 .then(data => {
+                    totalResults = data.total;
+                    totalPages = data.total_pages;
                     const photos = data.results.map(({urls}) => urls.regular);
                     fetchedResults[curPage] = photos;
                     renderSearchResults(photos);
+
+                    if(totalPages > curPage)
+                        nextButton.removeAttr('disabled');
+                    else
+                        nextButton.attr('disabled', 'disabled');
                 });
         }
 
         function searchUnsplash(e){
-            if(e.keyCode == 13){
+            if(e.keyCode == 13 && e.target.value.length){
                 searchKey = e.target.value;
                 curPage = 1;
                 fetchedResults = {};
                 doSearch();
+                prevButton.attr('disabled', 'disabled');
+                nextButton.attr('disabled', 'disabled');
             }
         }
         
         function goToNextPage(){
             curPage += 1;
+            prevButton.removeAttr('disabled');
             if(fetchedResults[curPage]){
                 renderSearchResults(fetchedResults[curPage]);
                 return;
@@ -178,10 +420,24 @@
         }
         
         function goToPrevPage(){
-            if(curPage > 0){
-                curPage -= 1;
-                renderSearchResults(fetchedResults[curPage]);
-            }
+            curPage -= 1;
+            renderSearchResults(fetchedResults[curPage]);
+            nextButton.removeAttr('disabled');
+            if(curPage === 1)
+                prevButton.attr('disabled', 'disabled');
+        }
+
+        function copyLinkToClipboard(e, link){
+            ipcRenderer.send('copy-link', link);
+            const image = e.currentTarget
+            image.classList.add('link-copied');
+            setTimeout(() => {
+                image.classList.remove('link-copied');
+            }, 570);
+        }
+
+        function sendTweet(){
+            ipcRenderer.send('send-tweet');
         }
     </script>
     <script>if (window.module) module = window.module;</script>
