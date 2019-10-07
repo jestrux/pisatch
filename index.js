@@ -5,8 +5,8 @@ const mb = menubar({
   icon: './icon.png',
   browserWindow: {
     width: 630, height: 80,
+    backgroundColor: "#000000"
   },
-  background: "#000000",
   preloadWindow: true,
   webPreferences: {nodeIntegration: true}
 });
