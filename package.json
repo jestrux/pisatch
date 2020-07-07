@@ -1,14 +1,19 @@
 {
-  "name": "image-search",
+  "name": "pisatch",
+  "productName": "Pisatch",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "electron index.js"
+    "start": "electron index.js",
+    "package": "electron-packager ./ --platform=darwin --arch=x64"
   },
   "dependencies": {
-    "electron": "^6.0.11",
     "menubar": "^6.0.8",
     "unsplash-js": "^5.0.0"
+  },
+  "devDependencies": {
+    "electron": "^6.0.11",
+    "electron-packager": "^15.0.0"
   }
 }

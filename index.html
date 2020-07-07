@@ -391,10 +391,33 @@
                     fetchedResults[curPage] = photos;
                     renderSearchResults(photos);
 
+                    $("#prevNext").show();
+
                     if(totalPages > curPage)
                         nextButton.removeAttr('disabled');
                     else
                         nextButton.attr('disabled', 'disabled');
+                });
+        }
+        
+        function fetchPopular(){
+            searchResults.html(loader);
+            resultsMessage.text("");
+
+            if(initialSearch)
+                ipcRenderer.send('state-change', 'searching');
+
+            unsplash.photos.listPhotos(1, 30)
+                .then(res => res.json())
+                .then(data => {
+                    console.log("Res: ", data);
+                    // totalResults = data.total;
+                    // totalPages = data.total_pages;
+                    const photos = data.map(({urls}) => urls.regular);
+                    // fetchedResults[curPage] = photos;
+                    renderSearchResults(photos);
+
+                    $("#prevNext").hide();
                 });
         }
 
@@ -439,6 +462,8 @@
         function sendTweet(){
             ipcRenderer.send('send-tweet');
         }
+
+        fetchPopular();
     </script>
     <script>if (window.module) module = window.module;</script>
 </body>
