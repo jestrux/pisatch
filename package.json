@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "electron index.js",
-    "package": "electron-packager ./ --platform=darwin --arch=x64 --icon=icon.png"
+    "package": "electron-packager ./ --platform=darwin --arch=x64 --icon=icon.png --ignore=preview.gif"
   },
   "dependencies": {
     "menubar": "^6.0.8",
