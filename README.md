@@ -1,5 +1,5 @@
 # Pisatch
-Mac menu app for searching images easily. You can download the latest packaged app in releases.
+Mac menu app for searching images easily. You can download the latest packaged app in [releases](https://github.com/jestrux/Search-Images-Menu-App/releases).
 
 ## Preview
 ![Pisatch preview](/preview.gif?raw=true "Pisatch preview")
