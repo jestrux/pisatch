@@ -1,8 +1,9 @@
+const path = require('path');
 const { menubar } = require('menubar');
 const { ipcMain, clipboard, shell } = require("electron");
 
 const mb = menubar({
-  icon: './icon.png',
+  icon: path.join(__dirname, 'icon.png'),
   browserWindow: {
     width: 630, height: 80,
     backgroundColor: "#000000"
