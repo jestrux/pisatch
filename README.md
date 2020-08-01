@@ -1,5 +1,5 @@
 # Pisatch
-Mac menu app for searching images easily
+Mac menu app for searching images easily. You can download the latest packaged app in releases.
 
 ## Preview
 ![Pisatch preview](/preview.gif?raw=true "Pisatch preview")
