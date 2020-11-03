@@ -9,7 +9,7 @@ Mac menu app for searching images easily. You can download the latest packaged a
 Clone this repository locally :
 
 ``` bash
-git clone https://github.com/jestrux/ladha.git
+git clone https://github.com/jestrux/pisatch.git
 ```
 
 Install dependencies with npm :
@@ -23,4 +23,4 @@ yarn
 |Command|Description|
 |--|--|
 |`yarn start`| Run app locally |
-|`yarn oackage`|  Builds the application for MAC OS
+|`yarn package`|  Builds the application for MAC OS
