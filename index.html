@@ -258,15 +258,6 @@
                 opacity: 0;
             }
         }
-
-        .photo-item img{
-            width: 100%;
-            background: #000;
-        }
-
-        .caption{
-            display: none !important;
-        }
     </style>
 </head>
 <body>
@@ -308,11 +299,10 @@
         if (typeof module === 'object') {window.module = module; module = undefined;}
     </script>
     <script src="jquery.js"></script>
+    <script src="unsplash.min.js"></script>
     <script src="justified-gallery.js"></script>
-    <script src="fast-average-color.js"></script>
+    
     <script>
-        const Unsplash = require('unsplash-js').default;
-        const fac = new FastAverageColor();
         const { ipcRenderer } = require('electron');
         let curPage = 1;
         let totalResults = 0;
@@ -326,7 +316,7 @@
         const resultsMessage = $("#resultsMessage");
         const loader = `<div style="height: 60px" class="layout center-center"><img src="loader.gif" width="50px" /></div>`;
         const noResults = `<div style="height: 60px; color: #333" class="layout center-center">No results found.</div>`;
-        const unsplash = new Unsplash({
+        const unsplash = new Unsplash.default({
             applicationId: "17ef130962858e4304efe9512cf023387ee5d36f0585e4346f0f70b2f9729964",
             secret: "14f525467a9227bdbc99931faf3a9e549fc718c049f18a952f18291e95335e36"
         });
@@ -336,22 +326,26 @@
                 searchResults.html(noResults);
 
                 if(initialSearch)
-                    ipcRenderer.send('state-change', 'no-results');
+                    stateChangedTo('no-results');
                 return;
             }
 
             if(initialSearch)
-                ipcRenderer.send('state-change', 'found-results');
+                stateChangedTo('found-results');
 
-            let results = '<div id="resultItems">'
-            results += photos.map(photo => `
-                <div class="photo-item" onclick="copyLinkToClipboard(event, '${photo}')">
-                    <img src="${photo}" alt="result item" />
+            let results = '<div id="resultItems">';
+                results += photos.map(({urls, width, height, color}) => `
+                <div style="background: ${color};" class="photo-item" onclick="copyLinkToClipboard(event, '${urls.regular}')">
+                    <img width="${parseInt(200*width/height)}" height="200" src="${urls.regular}" alt="result item" />
                 </div>
             `).join('');
-            results += "</div>"
+            results += "</div>";
             searchResults.html(results);
-            $("#resultItems").justifiedGallery({rowHeight: 200, margins: 8});
+            $('#resultItems').justifiedGallery({
+                captions: false,
+                waitThumbnailsLoad: false,
+                rowHeight: 200, margins: 8,
+            });
 
             let resultText = `<strong>${totalResults > 0 ? totalResults : "No"}</strong>`;
             resultText += totalResults === 1 ? " result" : " results";
@@ -359,20 +353,7 @@
             resultText += ` <small>page ${curPage} of ${totalPages}</small>`;
 
             resultsMessage.html(resultText);
-            setImageColors();
             initialSearch = false;
-        }
-
-        function setImageColors(){
-            const resultItems = searchResults.find(".photo-item");
-            searchResults.find("img").each((index, image) => {
-                const parent = image.parentNode;
-                image.onload = function(){
-                    const color = fac.getColor(image);
-                    parent.style.backgroundColor = color.rgba.replace('1)', '0.92)');
-                    parent.style.color = color.isDark ? '#fff' : '#000';
-                }
-            });
         }
 
         function doSearch(){
@@ -380,14 +361,14 @@
             resultsMessage.text("");
 
             if(initialSearch)
-                ipcRenderer.send('state-change', 'searching');
+                stateChangedTo('searching');
 
             unsplash.search.photos(searchKey, curPage, 15)
                 .then(res => res.json())
                 .then(data => {
                     totalResults = data.total;
                     totalPages = data.total_pages;
-                    const photos = data.results.map(({urls}) => urls.regular);
+                    const photos = data.results.map(({urls, width, height, color}) => ({urls, width, height, color}));
                     fetchedResults[curPage] = photos;
                     renderSearchResults(photos);
 
@@ -405,16 +386,12 @@
             resultsMessage.text("");
 
             if(initialSearch)
-                ipcRenderer.send('state-change', 'searching');
+                stateChangedTo('searching');
 
             unsplash.photos.listPhotos(1, 30)
                 .then(res => res.json())
                 .then(data => {
-                    console.log("Res: ", data);
-                    // totalResults = data.total;
-                    // totalPages = data.total_pages;
-                    const photos = data.map(({urls}) => urls.regular);
-                    // fetchedResults[curPage] = photos;
+                    const photos = data.map(({urls, width, height, color}) => ({urls, width, height, color}));
                     renderSearchResults(photos);
 
                     $("#prevNext").hide();
@@ -461,6 +438,10 @@
 
         function sendTweet(){
             ipcRenderer.send('send-tweet');
+        }
+
+        function stateChangedTo(newState){
+            ipcRenderer.send('state-change', newState);
         }
 
         fetchPopular();
