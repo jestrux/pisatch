@@ -13,7 +13,7 @@
     "unsplash-js": "^5.0.0"
   },
   "devDependencies": {
-    "electron": "^6.0.11",
+    "electron": "^18.3.7",
     "electron-packager": "^15.0.0"
   }
 }
